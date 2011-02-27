@@ -1,0 +1,165 @@
+/*
+ * Copyright (c) 2008 Matt Fichman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+#include "builtins.hpp"
+#include "interpreter.hpp"
+
+extern "C"
+{
+	#include <lua.h>
+	#include <lualib.h>
+	#include <lauxlib.h>
+}
+
+#include <string>
+#include <sstream>
+#include <cerrno>
+
+#include <sys/stat.h>
+#include <grp.h>
+#include <pwd.h>
+
+
+using namespace Automaton;
+
+static int os_stat(lua_State* env);
+static int os_chmod(lua_State* env);
+static int os_chown(lua_State* env);
+static int os_getpwnam(lua_State* env);
+static int os_getgrnam(lua_State* env);
+
+void Automaton::register_os(Interpreter& interp)
+{
+	lua_State* env = interp.get_state().get();
+	
+	lua_getglobal(env, "os");
+	lua_pushcfunction(env, os_stat);
+	lua_setfield(env, -2, "stat");
+	lua_pushcfunction(env, os_chmod);
+	lua_setfield(env, -2, "chmod");
+	lua_pushcfunction(env, os_chown);
+	lua_setfield(env, -2, "chown");
+	lua_pushcfunction(env, os_getpwnam);
+	lua_setfield(env, -2, "getpwnam");
+	lua_pushcfunction(env, os_getgrnam);
+	lua_setfield(env, -2, "getgrnam");
+	lua_pop(env, 1);
+	
+	lua_newtable(env);
+	lua_setglobal(env, "automaton");
+}
+
+static int os_stat(lua_State* env)
+{
+	struct stat buffer;
+	struct group* grp;
+	struct user* usr;
+	if (!stat(lua_tostring(env, -1), &buffer)) {
+		lua_newtable(env);
+		
+		int flags = S_IRWXO | S_IRWXG | S_IRWXU | S_ISUID | S_ISGID;
+		int mode = buffer.st_mode & flags;
+		
+		std::ostringstream ss;
+		ss << std::oct << mode;
+		
+		lua_pushstring(env, ss.str().c_str());
+		
+		lua_setfield(env, -2, "mode");
+		lua_pushinteger(env, buffer.st_gid);
+		lua_setfield(env, -2, "gid");
+		lua_pushinteger(env, buffer.st_uid);
+		lua_setfield(env, -2, "uid");
+		lua_pushboolean(env, buffer.st_mode & S_IFREG);
+		lua_setfield(env, -2, "reg");
+		lua_pushboolean(env, buffer.st_mode & S_IFDIR);
+		lua_setfield(env, -2, "dir");
+		return 1;		
+	} else {
+		lua_pushboolean(env, false);
+		lua_pushstring(env, strerror(errno));  
+		return 2;
+	}
+}
+
+static int os_chmod(lua_State* env)
+{
+	std::string file = lua_tostring(env, -2);
+	std::istringstream ss(lua_tostring(env, -1));
+	
+	int mode;
+	ss >> std::oct >> mode;
+	
+	if (!chmod(file.c_str(), mode)) {
+		lua_pushboolean(env, true);
+		return 1;
+	} else {
+		lua_pushboolean(env, false);
+		lua_pushstring(env, strerror(errno));  
+		return 2;		
+	}
+}
+
+static int os_chown(lua_State* env)
+{
+	std::string file = lua_tostring(env, -3);
+	int uid = lua_tointeger(env, -2);
+	int gid = lua_tointeger(env, -1);
+	
+	if (!chown(file.c_str(), uid, gid)) {
+		lua_pushboolean(env, true);
+		return 1;
+	} else {
+		lua_pushboolean(env, false);
+		lua_pushstring(env, strerror(errno));
+		return 2;
+	}
+}
+
+static int os_getpwnam(lua_State* env)
+{
+	std::string usr_name = lua_tostring(env, -1);
+	struct passwd* usr = getpwnam(usr_name.c_str());
+	
+	if (usr) {
+		lua_pushinteger(env, usr->pw_uid);
+		return 1;
+	} else {
+		lua_pushboolean(env, false);
+		lua_pushstring(env, strerror(errno));
+		return 2;
+	}
+}
+
+static int os_getgrnam(lua_State* env)
+{
+	std::string grp_name = lua_tostring(env, -1);
+	struct group* grp = getgrnam(grp_name.c_str());
+	
+	if (grp) {
+		lua_pushinteger(env, grp->gr_gid);
+		return 1;
+	} else {
+		lua_pushboolean(env, false);
+		lua_pushstring(env, strerror(errno));
+		return 2;
+	}
+}

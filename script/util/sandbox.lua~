@@ -1,0 +1,14 @@
+function sandbox(file, env)
+	local mt = {}
+	
+	env.print = print
+	mt.__index = function(table, index)
+		return executor[index]
+	end
+	
+	setmetatable(env, mt)
+	
+	local main = assert(loadfile(file))
+	setfenv(main, env)
+	main()
+end

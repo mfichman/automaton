@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/Matt/Code/Automaton/src/client/environment.cpp
+
+/Users/Matt/Code/Automaton/src/client/interpreter.cpp
+interpreter.hpp
+/Users/Matt/Code/Automaton/src/client/interpreter.hpp
+
+/Users/Matt/Code/Automaton/src/client/main.cpp
+
+/Users/Matt/Code/Automaton/src/client/resource.cpp
+resource.hpp
+/Users/Matt/Code/Automaton/src/client/resource.hpp
+interpreter.hpp
+/Users/Matt/Code/Automaton/src/client/interpreter.hpp
+
