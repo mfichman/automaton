@@ -24,8 +24,8 @@ local package = require('package')
 local function Spec(auto, argv)
     local name = argv[1]
     
-    -- FIXME: Do a real path search
-    auto.resourcepath = 'test/'..name..'/resource' 
+    -- FIXME: Do a real path search instead of searching only in 'samples'
+    auto.resourcepath = 'samples/'..name..'/resource' 
 
     require(name..'.config')
     auto[name] = require(name..'.spec')

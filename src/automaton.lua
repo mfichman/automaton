@@ -48,14 +48,17 @@ m.host.packagemanager = 'apt'
 
 local command = {}
 
+-- Internal: Schedule a command to run the compiled script/slug.
 function m.schedule(cmd)
     table.insert(command, cmd)
 end
 
+-- Specify that Automaton should download file contents from a remote host.
 function m.remote(url)
     return {url=url, source='remote'}
 end
 
+-- Load the contents of a resource file for use in a `File` directive.
 function m.content(path)
     local fd = io.open(m.resourcepath..'/'..path)
     if not fd then
@@ -113,8 +116,10 @@ function m.run()
     fd:close()
 end
 
+-- FIXME: These commands are specific to the bash driver; they should be moved
+-- to a bash driver initialization routine
 m.schedule('#!/bin/bash')
 m.schedule('set -e')
-m.schedule('apt-get update') -- FIXME: Add as a prereq command
+m.schedule('apt-get update') -- FIXME: Add as a `prepass` command
 
 return m
