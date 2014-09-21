@@ -1,4 +1,4 @@
-automaton
+Automaton
 =========
 
 Automaton is a server configuration management tool, like Puppet or Chef.
