@@ -17,6 +17,6 @@ minecraft.options = {}
 minecraft.options.motd = 'WASSUP YA DINGUS'
 minecraft.options.onlinemode = true
 
-s3.accesskey = ''
-s3.secretkey = ''
+s3.accesskey = os.getenv('AWS_ACCESS_KEY')
+s3.secretkey = os.getenv('AWS_SECRET_KEY')
 
