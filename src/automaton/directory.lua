@@ -18,8 +18,10 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+local auto = require('automaton')
+
 -- Sets a directory to the specified state. 
-local function Directory(auto, argv)
+local function Directory(argv)
     local path = argv[1]
     local group = argv.group or argv.owner
     

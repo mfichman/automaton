@@ -21,5 +21,24 @@
 
 local auto = require('automaton')
 
-auto:Spec{'minecraft'}
+auto.Spec{'minecraft'}
 
+-- Allow incoming SSH and web traffic; block everything else
+auto.FirewallRule {
+    action='accept',
+    direction='input',
+    port='ssh',
+    protocol='tcp',
+}
+
+auto.FirewallRule {
+    action='accept',
+    direction='input',
+    port=80,
+    protocol='tcp',
+}
+
+auto.FirewallRule {
+    action='drop',
+    direction='input',
+}

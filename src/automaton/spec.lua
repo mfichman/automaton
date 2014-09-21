@@ -18,10 +18,11 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+local auto = require('automaton')
 local package = require('package')
 
 -- Loads a spec into the automaton namesapace and exeuctes any commands in it.
-local function Spec(auto, argv)
+local function Spec(argv)
     local name = argv[1]
     
     -- FIXME: Do a real path search instead of searching only in 'samples'

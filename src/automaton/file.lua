@@ -18,21 +18,24 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+local auto = require('automaton')
 
 -- Sets a file to the specified state. If the content is a URL, then download
 -- the file on the remote machine. FIXME: Allow a file to be deleted. Also, 
 -- investigate in implementation for automically updating the file. This 
 -- function doesn't automatically update the file contents, which might cause
 -- problems for some running processes.
-local function File(auto, argv)
+local function File(argv)
     local path = argv[1]
     local group = argv.group or argv.owner
 
-    auto.schedule('chmod -f +rw '..path..'||true')
-
-    if type(argv.content) == 'string' then
+    if argv.content == nil then
+        auto.schedule('touch '..path)
+    elseif type(argv.content) == 'string' then
+        auto.schedule('chmod -f +rw '..path..'||true')
         auto.schedule('cat <<EOF > '..path..'\n'..argv.content..'\nEOF')
     elseif argv.content.source == 'remote' then
+        auto.schedule('chmod -f +rw '..path..'||true')
         auto.schedule('curl '..argv.content.url..' > '..path)
     else
         error('bad content for file '..path)

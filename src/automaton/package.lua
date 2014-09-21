@@ -18,8 +18,15 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+local auto = require('automaton')
+
+-- Update package database
+auto.pre(function()
+    auto.schedule('apt-get update') 
+end)
+
 -- Sets an OS package to the specified state. FIXME: Allow package to be deleted.
-local function Package(auto, argv)
+local function Package(argv)
     local name = argv[1]
 
     if auto.host.packagemanager == 'apt' then

@@ -18,7 +18,9 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
-local function Link(auto, argv)
+local auto = require('automaton')
+
+local function Link(argv)
     local path = argv[1]
     local kind = argv.kind or 'symbolic'
     local group = argv.group or argv.owner

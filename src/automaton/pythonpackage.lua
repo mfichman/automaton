@@ -18,13 +18,20 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+local auto = require('automaton')
+
+-- Make sure pip is installed.
+auto.pre(function() 
+    auto.Package { 'python' }
+    auto.Package { 'python-pip' }
+end)
 
 -- Sets a file to the specified state. If the content is a URL, then download
 -- the file on the remote machine. FIXME: Allow a file to be deleted. Also, 
 -- investigate in implementation for automically updating the file. This 
 -- function doesn't automatically update the file contents, which might cause
 -- problems for some running processes.
-local function PythonPackage(auto, argv)
+local function PythonPackage(argv)
     local name = argv[1]
 
     auto.schedule('pip install '..name)

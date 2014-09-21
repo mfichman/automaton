@@ -26,28 +26,27 @@ local version = auto.metadata.minecraft.version
 
 
 -- Install required packages
-auto:Package { 'openjdk-7-jre' }
-auto:Package { 'python-pip' }
-auto:Package { 'runit' }
-auto:PythonPackage { 'tinys3' }
+auto.Package { 'openjdk-7-jre' }
+auto.Package { 'runit' }
+auto.PythonPackage { 'tinys3' }
 
 -- Set up user and home directories for minecraft server
-auto:User { username }
+auto.User { username }
 
-auto:Directory {
+auto.Directory {
     homedir,
     owner=username,
     mode=0700,
 }
 
-auto:Directory {
+auto.Directory {
     homedir..'/server', 
     owner=username,
     mode=0700,
 }
 
 -- Executable jar file
-auto:File {
+auto.File {
     homedir..'/server/minecraft_server.jar',
     owner=username,
     mode=0700,
@@ -55,28 +54,28 @@ auto:File {
 }
 
 -- Configuration files
-auto:File {
+auto.File {
     homedir..'/server/eula.txt',
     owner=username,
     mode=0600,
     content='eula=true\n',
 }
 
-auto:File {
+auto.File {
     homedir..'/server/ops.txt',
     owner=username,
     mode=0600,
     content=table.concat(auto.metadata.minecraft.ops),
 }
 
-auto:File {
+auto.File {
     homedir..'/server/server.properties',
     owner=username,
     mode=0600,
     content=auto.template('server.properties.t'),
 }
 
-auto:File {
+auto.File {
     '/root/.bashrc',
     owner='root',
     mode=0400,
@@ -84,22 +83,30 @@ auto:File {
 }
 
 -- Backup script
-auto:File {
+auto.File {
     homedir..'/server/minecraft-s3.py',
     owner=username,
     mode=0700,
     content=auto.content('minecraft-s3.py'),
 }
 
+-- Firewall entry for server port
+auto.FirewallRule {
+    action='accept',
+    direction='input',
+    port=auto.metadata.minecraft.options.serverport,
+    protocol='tcp',
+}
+
 -- Startup script & link service to runit
-auto:File {
+auto.File {
     homedir..'/server/run',
     owner=username,
     mode=0700,
     content=auto.template('run.t'),
 }
 
-auto:Link {
+auto.Link {
     '/etc/service/minecraft',
     owner='minecraft',
     mode=0600,

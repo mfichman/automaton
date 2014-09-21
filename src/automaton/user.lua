@@ -18,8 +18,10 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+local auto = require('automaton')
+
 -- Sets a user to the specified state.
-local function User(auto, argv)
+local function User(argv)
     local name = argv[1]
     auto.schedule('id -u "'..name..'" &> /dev/null||useradd "'..name..'"')
 end

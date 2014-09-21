@@ -17,6 +17,6 @@ minecraft.options = {}
 minecraft.options.motd = 'WASSUP YA DINGUS'
 minecraft.options.onlinemode = true
 
-s3.accesskey = 'AKIAI52RMBODZ3ILQ7LA'
-s3.secretkey = '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'
+s3.accesskey = ''
+s3.secretkey = ''
 

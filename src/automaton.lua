@@ -23,17 +23,6 @@ local io = require('io')
 local string = require('string')
 local m = {}
 
--- FIXME: Support additional drivers by loading these units from the
--- driver-specific directory.
-m.Spec = require('automaton.spec')
-m.File = require('automaton.file')
-m.Directory = require('automaton.directory')
-m.Execute = require('automaton.execute')
-m.Package = require('automaton.package')
-m.PythonPackage = require('automaton.pythonpackage')
-m.User = require('automaton.user')
-m.Link = require('automaton.link')
-
 m.metadata = require('automaton.metadata')
 m.host = {}
 
@@ -47,6 +36,18 @@ m.metadata.default.ssh.user = 'automaton'
 m.host.packagemanager = 'apt'
 
 local command = {}
+local pre = {}
+local post = {}
+
+-- Internal: Schedule a function to run before commands are executed.
+function m.pre(fn)
+    table.insert(pre, fn)
+end
+
+-- Internal: Schedule a function to run after commands are executed.
+function m.post(fn)
+    table.insert(post, fn)
+end
 
 -- Internal: Schedule a command to run the compiled script/slug.
 function m.schedule(cmd)
@@ -106,8 +107,21 @@ end
 -- Upload compiled shell script and execute.
 -- FIXME: This is driver-specific, and should be in a driver function.
 function m.run()
-    table.insert(command, '')
-    local payload = string.gsub(table.concat(command, '\n'), '\r\n', '\n')
+    local maincmds = table.concat(command, '\n')
+
+    command = {}
+    for i, fn in ipairs(pre) do
+        fn()
+    end
+    local precmds = table.concat(command, '\n')
+
+    command = {}
+    for i, fn in ipairs(post) do
+        fn()
+    end
+    local postcmds = table.concat(command, '\n')
+
+    local payload = string.gsub(table.concat({precmds, maincmds, postcmds}, '\n'), '\r\n', '\n')
     local fd = m.ssh({'bash -c "cat > automaton.sh"'}, 'wb')
     fd:write(payload)
     fd:close()
@@ -115,11 +129,5 @@ function m.run()
     local fd = m.ssh({'sudo', 'bash', 'automaton.sh'}, 'wb')
     fd:close()
 end
-
--- FIXME: These commands are specific to the bash driver; they should be moved
--- to a bash driver initialization routine
-m.schedule('#!/bin/bash')
-m.schedule('set -e')
-m.schedule('apt-get update') -- FIXME: Add as a `prepass` command
 
 return m
