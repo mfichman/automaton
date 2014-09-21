@@ -24,7 +24,7 @@ auto:File {
 }
 ```
 
-Install packages:
+Install a package:
 
 ```lua
 auto:Package { 
@@ -32,13 +32,15 @@ auto:Package {
 }
 ```
 
-Execute scripts:
+Execute a script:
 
 ```lua
 auto:Execute { 
     'echo hello world!\n' 
 }
 ```
+
+See `samples` for more examples.
 
 
 Basic Usage
