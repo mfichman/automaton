@@ -1,4 +1,4 @@
-automaton
+Automaton
 =========
 
 Automaton is a server configuration management tool, like Puppet or Chef.
@@ -11,7 +11,7 @@ the script.
 Samples
 -------
 
-Specify a file's attributes an contents:
+Specify a file's attributes and contents:
 
 ```lua
 local auto = require('automaton')
@@ -24,7 +24,7 @@ auto:File {
 }
 ```
 
-Install packages:
+Install a package:
 
 ```lua
 auto:Package { 
@@ -32,13 +32,15 @@ auto:Package {
 }
 ```
 
-Execute scripts:
+Execute a script:
 
 ```lua
 auto:Execute { 
     'echo hello world!\n' 
 }
 ```
+
+See `samples` for more examples.
 
 
 Basic Usage
