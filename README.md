@@ -11,7 +11,7 @@ the script.
 Samples
 -------
 
-Specify a file's attributes an contents:
+Specify a file's attributes and contents:
 
 ```lua
 local auto = require('automaton')
