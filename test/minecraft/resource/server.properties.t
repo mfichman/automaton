@@ -1,0 +1,27 @@
+#Minecraft server properties
+generator-settings=#{minecraft.options.generatorsettings}
+allow-nether=#{minecraft.options.allownether}
+level-name=#{minecraft.options.levelname}
+enable_query=#{minecraft.options.enablequery}
+allow-flight=#{minecraft.options.allowflight}
+server-port=#{minecraft.options.serverport}
+level-type="#{minecraft.options.leveltype}"
+enable-rcon=#{minecraft.options.enablercon}
+level-seed=#{minecraft.options.levelseed}
+server-ip=#{minecraft.options.serverip}
+max-build-height=#{minecraft.options.maxbuildheight}
+spawn-npcs=#{minecraft.options.spawnnpcs}
+white-list=#{minecraft.options.whitelist}
+spawn-animals=#{minecraft.options.spawnanimals}
+snooper-enabled=#{minecraft.options.snooperenabled}
+hardcore=#{minecraft.options.hardcore}
+texture-pack="#{minecraft.options.texturepack}"
+online-mode=#{minecraft.options.onlinemode}
+pvp=#{minecraft.options.pvp}
+difficulty=#{minecraft.options.difficulty}
+gamemode=#{minecraft.options.gamemode}
+max-players=#{minecraft.options.maxplayers}
+spawn-monsters=#{minecraft.options.spawnmonsters}
+generate-structures=#{minecraft.options.generatestructures}
+view-distance=#{minecraft.options.viewdistance}
+motd="#{minecraft.options.motd}"

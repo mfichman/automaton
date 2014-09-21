@@ -1,1 +1,0 @@
-/usr/bin/c++    -Wl,-search_paths_first -headerpad_max_install_names -fPIC CMakeFiles/automaton,.dir/environment.cpp.o CMakeFiles/automaton,.dir/interpreter.cpp.o CMakeFiles/automaton,.dir/main.cpp.o CMakeFiles/automaton,.dir/resource.cpp.o  -o /Users/Matt/Code/Automaton/bin/automaton,  

@@ -1,0 +1,35 @@
+local auto = require('automaton')
+local minecraft = {}
+
+minecraft.user = 'minecraft'
+minecraft.version = '1.8'
+minecraft.ops = {}
+minecraft.options = {}
+minecraft.options.generatorsettings = ''
+minecraft.options.allownether = true
+minecraft.options.levelname = 'world'
+minecraft.options.enablequery = false
+minecraft.options.allowflight = false
+minecraft.options.serverport = 25565
+minecraft.options.leveltype = 'DEFAULT'
+minecraft.options.enablercon = false
+minecraft.options.levelseed = ''
+minecraft.options.serverip = ''
+minecraft.options.maxbuildheight = 256
+minecraft.options.spawnnpcs = true
+minecraft.options.whitelist = false
+minecraft.options.spawnanimals = true
+minecraft.options.snooperenabled = true
+minecraft.options.hardcore = false
+minecraft.options.texturepack = ''
+minecraft.options.onlinemode = true
+minecraft.options.pvp = true
+minecraft.options.difficulty = 1
+minecraft.options.gamemode = 0
+minecraft.options.maxplayers = 20
+minecraft.options.spawnmonsters = true
+minecraft.options.generatestructures = true
+minecraft.options.viewdistance = 10
+minecraft.options.motd = 'Minecraft server'
+
+auto.metadata.default.minecraft = minecraft
