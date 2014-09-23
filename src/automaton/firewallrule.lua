@@ -31,13 +31,13 @@ end)
 
 -- Set up the iptables init file and reload the rules from that file.
 auto.post(function()
-    auto.Execute {
-        'iptables-save > /etc/iptables/rules.v4',
-    }
     auto.Directory {
         '/etc/iptables',
         owner='root',
         mode=0700,
+    }
+    auto.Execute {
+        'iptables-save > /etc/iptables/rules.v4',
     }
     auto.File {
         '/etc/iptables/rules.v4',

@@ -122,6 +122,11 @@ function m.run()
     local postcmds = table.concat(command, '\n')
 
     local payload = string.gsub(table.concat({precmds, maincmds, postcmds}, '\n'), '\r\n', '\n')
+    if m.action == 'printslug' then
+        print(payload)
+        return
+    end
+
     local fd = m.ssh({'bash -c "cat > automaton.sh"'}, 'wb')
     fd:write(payload)
     fd:close()

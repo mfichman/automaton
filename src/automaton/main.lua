@@ -20,6 +20,15 @@ auto.FirewallRule = require('automaton.firewallrule')
 require('config')
 require('spec') -- Load the entry-point spec file
 
+
+for i, v in ipairs(arg) do
+    if v == '--print-slug' then
+        auto.action = 'printslug'
+    else
+        error('invalid argument: '..v)
+    end
+end
+
 auto.run()
 
 
