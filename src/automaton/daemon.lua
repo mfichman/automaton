@@ -45,7 +45,7 @@ local function Daemon(argv)
         argv.dir..'/run',
         owner=user,
         mode=0700,
-        content=string.format('#!/bin/bash -e\nexec chpst -u%s %s 2>&1', name, argv.command),
+        content=string.format('#!/usr/bin/env bash -e\nexec chpst -u%s %s 2>&1', name, argv.command),
     }
 
     auto.File {
@@ -62,7 +62,7 @@ local function Daemon(argv)
         target=argv.dir,
     }
 
-    auto.Execute { 'sv start /etc/service/'..name..'||true' }
+    auto.Execute { 'sv up /etc/service/'..name }
 end
 
 return Daemon

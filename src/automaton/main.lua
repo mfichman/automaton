@@ -2,8 +2,7 @@ local auto = require('automaton')
 
 -- FIXME: These commands are specific to the bash driver; they should be moved
 -- to a bash driver initialization routine
-auto.schedule('#!/bin/bash')
-auto.schedule('set -e')
+auto.schedule('#!/usr/bin/env bash -e')
 
 -- FIXME: Support additional drivers by loading these units from the
 -- driver-specific directory. Currently, there is only this one 'main'
