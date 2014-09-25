@@ -20,20 +20,49 @@
 
 local auto = require('automaton')
 
-local function Link(argv)
-    local path = argv[1]
-    local kind = argv.kind or 'symbolic'
-    local group = argv.group or argv.owner
+auto.pre(function() 
+    auto.Package {'runit'}
+end)
 
-    if kind == 'symbolic' then
-        auto.schedule('ln -sfT '..argv.target..' '..path)
-    elseif kind == 'hard' then
-        auto.schedule('ln -fT '..argv.target..' '..path)
-    else
-        error('invalid link type')
-    end
+-- Sets up a daemon. FIXME: Move this into a RunItDaemon provider.
+local function Daemon(argv)
+    local name = argv[1]   
+    local user = argv.user or name
 
-    auto.schedule('chown -h '..argv.owner..':'..group..' '..path)
+    auto.Directory {
+        argv.dir,
+        owner=user,
+        mode=0700,
+    }
+
+    auto.Directory {
+        argv.dir..'/log',
+        owner=user,
+        mode=0700,
+    }
+
+    auto.File {
+        argv.dir..'/run',
+        owner=user,
+        mode=0700,
+        content=string.format('#!/bin/bash -e\nexec chpst -u%s %s 2>&1', name, argv.command),
+    }
+
+    auto.File {
+        argv.dir..'/log/run',
+        owner=user,
+        mode=0700,
+        content='#!/bin/bash\nexec svlogd -t .'
+    }
+    
+    auto.Link {
+        '/etc/service/'..name,
+        owner='root',
+        mode=0600,
+        target=argv.dir,
+    }
+
+    auto.Execute { 'sv start /etc/service/'..name..'||true' }
 end
 
-return Link
+return Daemon

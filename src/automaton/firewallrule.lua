@@ -23,7 +23,7 @@ local auto = require('automaton')
 -- Flush existing rules and allow established connections. Ensure iptables is
 -- installed.
 auto.pre(function() 
-    auto.Package { 'iptables' }
+    auto.Package {'iptables'}
     auto.schedule('iptables -F')
     auto.schedule('iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
     auto.schedule('iptables -A INPUT -i lo -j ACCEPT')
@@ -31,6 +31,10 @@ end)
 
 -- Set up the iptables init file and reload the rules from that file.
 auto.post(function()
+    auto.FirewallRule {
+        action='drop',
+        direction='input',
+    }
     auto.Directory {
         '/etc/iptables',
         owner='root',
@@ -64,6 +68,14 @@ local function FirewallRule(argv)
         table.insert(command, '-j DROP')
     else
         error('invalid action: '..argv.action)
+    end
+
+    if argv.source ~= nil then
+        table.insert(command, '--source '..argv.source)
+    end
+
+    if argv.destination ~= nil then
+        table.insert(command, '--destination '..argv.destination)
     end
 
     if argv.protocol ~= nil then

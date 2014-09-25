@@ -36,7 +36,7 @@ local function File(argv)
         auto.schedule('cat <<EOF > '..path..'\n'..argv.content..'\nEOF')
     elseif argv.content.source == 'remote' then
         auto.schedule('chmod -f +rw '..path..'||true')
-        auto.schedule('curl '..argv.content.url..' > '..path)
+        auto.schedule('curl --silent '..argv.content.url..' > '..path)
     else
         error('bad content for file '..path)
     end

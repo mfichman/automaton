@@ -6,7 +6,8 @@ auto.schedule('#!/bin/bash')
 auto.schedule('set -e')
 
 -- FIXME: Support additional drivers by loading these units from the
--- driver-specific directory.
+-- driver-specific directory. Currently, there is only this one 'main'
+-- driver. This driver should really be named 'drivers/debian.lua'
 auto.Spec = require('automaton.spec')
 auto.File = require('automaton.file')
 auto.Directory = require('automaton.directory')
@@ -16,10 +17,10 @@ auto.PythonPackage = require('automaton.pythonpackage')
 auto.User = require('automaton.user')
 auto.Link = require('automaton.link')
 auto.FirewallRule = require('automaton.firewallrule')
+auto.Daemon = require('automaton.daemon')
 
 require('config')
 require('spec') -- Load the entry-point spec file
-
 
 for i, v in ipairs(arg) do
     if v == '--print-slug' then
