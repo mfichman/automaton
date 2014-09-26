@@ -35,7 +35,8 @@ from automaton.rule.daemon import Daemon
 
 # FIXME: These commands are specific to the bash driver; they should be moved
 # to a bash driver initialization routine
-auto.schedule('#!/usr/bin/env bash -e')
+auto.schedule('#!/usr/bin/env bash')
+auto.schedule('set -e')
 
 # FIXME: Support additional drivers by loading these units from the
 # driver-specific directory. Currently, there is only this one 'main'

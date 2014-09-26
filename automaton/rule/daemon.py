@@ -47,14 +47,14 @@ class Daemon(auto.Rule):
             '%s/run' % kwargs['workdir'],
             owner=user,
             mode=0700,
-            content='#!/usr/bin/env bash -e\nexec chpst -u%s %s 2>&1' % (name, kwargs['command']),
+            content='#!/usr/bin/env bash\nset -e\nexec chpst -u%s %s 2>&1' % (name, kwargs['command']),
         )
     
         auto.File(
             '%s/log/run' % kwargs['workdir'],
             owner=user,
             mode=0700,
-            content='#!/bin/bash\nexec svlogd -t .'
+            content='#!/usr/bin/env bash\nset -e\nexec svlogd -t .'
         )
         
         auto.Link(
@@ -63,6 +63,4 @@ class Daemon(auto.Rule):
             mode=0600,
             target=kwargs['workdir'],
         )
- 
-        auto.Execute('sv up /etc/service/%s' % name)
 
