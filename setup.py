@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name = 'automaton',
@@ -9,7 +9,7 @@ setup(
     license = 'MIT',
     keywords = ('provisioning'),
     url = 'http://github.com/mfichman/automaton',
-    packages = ['automaton', 'automaton.rule', 'automaton.module'],
+    packages = find_packages(),
     entry_points = {
         'console_scripts': (
             'automaton = automaton.__main__:main'
