@@ -27,6 +27,7 @@ import automaton as auto
 # problems for some running processes.
 class File(auto.Rule):
     def __init__(self, path, **kwargs):
+        super(File, self).__init__()
         group = kwargs.get('group', kwargs['owner'])
 
         if 'content' not in kwargs:
@@ -42,4 +43,3 @@ class File(auto.Rule):
          
         auto.schedule('chmod %s %s' % (oct(kwargs['mode']), path))
         auto.schedule('chown %s:%s %s' % (kwargs['owner'], group, path))
-

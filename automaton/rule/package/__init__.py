@@ -20,9 +20,8 @@
 
 import automaton as auto
 
-# Sets a user to the specified state.
-class User(auto.Rule):
-    def __init__(self, name):
-        super(User, self).__init__()    
-        auto.schedule('id -u "%s" &> /dev/null||useradd "%s"' % (name, name))
-
+# FIXME: Add a pluggable way to detect facts from the host machine
+if 'red hat' in auto.host.os.lower():
+    from automaton.rule.package.yum import Package
+elif 'debian' in auto.host.os.lower():
+    from automaton.rule.package.apt import Package

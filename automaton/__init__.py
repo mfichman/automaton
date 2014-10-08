@@ -19,5 +19,5 @@
 # IN THE SOFTWARE.
 
 from automaton.metadata import metadata
-from automaton.core import (schedule, remote, pre, post, template, content, host) 
+from automaton.core import (schedule, remote, template, content, host) 
 from automaton.core import Rule

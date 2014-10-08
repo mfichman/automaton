@@ -20,9 +20,8 @@
 
 import automaton as auto
 
-# Sets a user to the specified state.
-class User(auto.Rule):
-    def __init__(self, name):
-        super(User, self).__init__()    
-        auto.schedule('id -u "%s" &> /dev/null||useradd "%s"' % (name, name))
-
+# Sets an OS package to the specified state. FIXME: Allow package to be deleted.
+class Package(auto.Rule):
+    def __init__(self, name, **kwargs):
+        super(Package, self).__init__()    
+        auto.schedule('yum install -y %s' % name)

@@ -23,5 +23,6 @@ import automaton as auto
 # Executes a command.
 class Execute(auto.Rule):
     def __init__(self, command, **kwargs):
+        super(Execute, self).__init__()    
         auto.schedule(command)
 

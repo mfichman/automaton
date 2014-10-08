@@ -20,19 +20,14 @@
 
 import automaton as auto
 
-# Update package database
-def pre():
-    auto.schedule('apt-get update') 
-
-auto.pre(pre)
-
 # Sets an OS package to the specified state. FIXME: Allow package to be deleted.
 class Package(auto.Rule):
     def __init__(self, name, **kwargs):
-        if auto.host.packagemanager == 'apt':
-            auto.schedule('apt-get install -y %s' % name)
-        elif auto.host.packagemanager == 'rpm':
-            auto.schedule('rpm install -y %s' % name)
-        else:
-            raise Exception('unsupported package manager: %s' % auto.host.packagemanager)
+        super(Package, self).__init__()    
+        auto.schedule('apt-get install -y %s' % name)
+
+    @staticmethod
+    def pre():
+        # Update package database
+        auto.schedule('apt-get update') 
 

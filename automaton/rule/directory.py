@@ -23,6 +23,7 @@ import automaton as auto
 # Sets a directory to the specified state. 
 class Directory(auto.Rule):
     def __init__(self, path, **kwargs):
+        super(Directory, self).__init__()    
         group = kwargs.get('group', kwargs['owner'])
         auto.schedule('mkdir -p %s' % path)
         auto.schedule('chmod %s %s' % (oct(kwargs['mode']), path))

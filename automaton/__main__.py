@@ -19,8 +19,15 @@
 # IN THE SOFTWARE.
 
 import automaton as auto
+import argparse
+import subprocess
 import sys
 import os
+
+# FIXME: These commands are specific to the bash driver; they should be moved
+# to a bash driver initialization routine
+auto.core.precmd.append('#!/usr/bin/env bash')
+auto.core.precmd.append('set -e')
 
 from automaton.rule.spec import Spec
 from automaton.rule.file import File
@@ -32,11 +39,6 @@ from automaton.rule.execute import Execute
 from automaton.rule.link import Link
 from automaton.rule.firewallrule import FirewallRule
 from automaton.rule.daemon import Daemon
-
-# FIXME: These commands are specific to the bash driver; they should be moved
-# to a bash driver initialization routine
-auto.schedule('#!/usr/bin/env bash')
-auto.schedule('set -e')
 
 # FIXME: Support additional drivers by loading these units from the
 # driver-specific directory. Currently, there is only this one 'main'
@@ -53,12 +55,34 @@ auto.FirewallRule = FirewallRule
 auto.Daemon = Daemon
 
 def main():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('host', nargs='*', type=str)
+    args = parser.parse_args()
+
     sys.path.append(os.getcwd())
     execfile('config.py')
     execfile('spec.py') # Load the entry-point spec file
 
-    auto.action = 'printslug'
-    auto.core.run()
+    payload = auto.core.payload()
+
+    if len(args.host) <= 0:
+        print(payload)
+    else:
+        import paramiko
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        for host in args.host:
+            ssh.connect(host, username='mfichman', password='@#hsgSiF1QqDaZntXB!!')
+            (stdin, stdout, stderr) = ssh.exec_command('bash -c "cat > automaton.sh"') 
+            stdin.write(payload)
+            stdin.channel.shutdown_write()
+            sys.stdout.write(stdout.read())
+            sys.stderr.write(stderr.read())
+            ssh.close()
+
+            #subprocess.check_call(('ssh', '-t', host, 'sudo bash automaton.sh'))
+            
 
 if __name__ == '__main__':
     main()

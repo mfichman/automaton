@@ -20,12 +20,6 @@
 
 import automaton as auto
 
-# Make sure pip is installed.
-def pre():
-    auto.Package('python')
-    auto.Package('python-pip')
-
-auto.pre(pre)
 
 # Sets a file to the specified state. If the content is a URL, then download
 # the file on the remote machine. FIXME: Allow a file to be deleted. Also, 
@@ -34,5 +28,12 @@ auto.pre(pre)
 # problems for some running processes.
 class PythonPackage(auto.Rule):
     def __init__(self, name, **kwargs):
+        super(PythonPackage, self).__init__()    
         auto.schedule('pip install %s' % name)
+
+    @staticmethod
+    def pre():
+        # Make sure pip is installed.
+        auto.Package('python')
+        auto.Package('python-pip')
 

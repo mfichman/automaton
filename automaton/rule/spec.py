@@ -29,6 +29,7 @@ def load(name):
 # Loads a spec into the automaton namesapace and exeuctes any commands in it.
 class Spec(auto.Rule):
     def __init__(self, name, **kwargs):
+        super(Spec, self).__init__()    
         auto.resourcepath = '%s/resource' % name
         load('%s.config' % name)
         load('%s.spec' % name)

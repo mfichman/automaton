@@ -20,41 +20,10 @@
 
 import automaton as auto
 
-# Flush existing rules and allow established connections. Ensure iptables is
-# installed.
-def pre():
-    auto.Package('iptables')
-    auto.schedule('iptables -F')
-    auto.schedule('iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
-    auto.schedule('iptables -A INPUT -i lo -j ACCEPT')
-
-
-# Set up the iptables init file and reload the rules from that file.
-def post():
-    auto.FirewallRule(
-        action='drop',
-        direction='input',
-    )
-    auto.Directory(
-        '/etc/iptables',
-        owner='root',
-        mode=0700,
-    )
-    auto.Execute(
-        'iptables-save > /etc/iptables/rules.v4',
-    )
-    auto.File(
-        '/etc/iptables/rules.v4',
-        owner='root',
-        mode=0600,
-    )
-
-auto.pre(pre)
-auto.post(post)
-
 # Inserts a firewall rule for the machine.
 class FirewallRule(auto.Rule):
     def __init__(self, **kwargs):
+        super(FirewallRule, self).__init__()    
         command = ['iptables']
 
         if kwargs['direction'] == 'input':
@@ -82,3 +51,33 @@ class FirewallRule(auto.Rule):
     
         auto.schedule(' '.join(command))
 
+    @staticmethod
+    def pre():
+        # Flush existing rules and allow established connections. Ensure
+        # iptables is installed.
+        auto.Package('iptables')
+        auto.schedule('iptables -F')
+        auto.schedule('iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
+        auto.schedule('iptables -A INPUT -i lo -j ACCEPT')
+
+
+    @staticmethod
+    def post():
+        # Set up the iptables init file and reload the rules from that file.
+        auto.FirewallRule(
+            action='drop',
+            direction='input',
+        )
+        auto.Directory(
+            '/etc/iptables',
+            owner='root',
+            mode=0700,
+        )
+        auto.Execute(
+            'iptables-save > /etc/iptables/rules.v4',
+        )
+        auto.File(
+            '/etc/iptables/rules.v4',
+            owner='root',
+            mode=0600,
+        )

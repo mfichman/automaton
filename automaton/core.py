@@ -21,30 +21,42 @@
 import automaton as auto
 import os
 import re
+import itertools
 
-class Rule(object): pass
+command = []
+precmd = []
+postcmd = []
+
+class Rule(object): 
+    def __init__(self):
+        if not getattr(self.__class__, '_init', False):
+            global command, precmd, postcmd
+            save = command
+            self.__class__._init = True 
+            command = precmd
+            self.__class__.pre()
+            command = postcmd
+            self.__class__.post()
+            command = save
+
+    @staticmethod
+    def pre():
+        pass
+
+    @staticmethod
+    def post():
+        pass
+         
 
 host = auto.metadata.Hash()
-host.packagemanager = 'apt'
-# FIXME: Detect package manager
+host.os = 'debian' # red hat
+# FIXME: Detect os version
 
 auto.metadata.default.ssh = auto.metadata.Hash()
 auto.metadata.default.ssh.host = '127.0.0.1'
 auto.metadata.default.ssh.port = 22
 auto.metadata.default.ssh.privatekey = '~/.ssh/id_rsa'
 auto.metadata.default.ssh.user = 'automaton'
-
-command = []
-prefn = []
-postfn = []
-
-# Internal: Schedule a function to run before commands are executed.
-def pre(fn):
-    prefn.append(fn)
-
-# Internal: Schedule a function to run after commands are executed.
-def post(fn):
-    postfn.append(fn)
 
 # Internal: Schedule a command to run the compiled script/slug.
 def schedule(cmd):
@@ -98,25 +110,8 @@ def ssh(args, mode):
 
 # Upload compiled shell script and execute.
 # FIXME: This is driver-specific, and should be in a driver function.
-def run():
-    global command
-
-    maincmds = '\n'.join(command)
-
-    command = []
-    for fn in prefn:
-        fn()
-    precmds = '\n'.join(command)
-
-    command = []
-    for fn in postfn:
-        fn()
-    postcmds = '\n'.join(command)
-
-    payload = '\n'.join((precmds, maincmds, postcmds))
-    if auto.action == 'printslug':
-        print(payload)
-        return
+def payload():
+    return '\n'.join(itertools.chain(precmd, command, postcmd))+'\n'
 
 """
     FIXME: Use paramiko

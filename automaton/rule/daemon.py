@@ -20,15 +20,10 @@
 
 import automaton as auto
 
-def pre():
-    auto.Package('runit')
-
-auto.pre(pre)
-
 # Sets up a daemon. FIXME: Move this into a RunItDaemon provider.
 class Daemon(auto.Rule):
-
     def __init__(self, name, **kwargs):
+        super(Daemon, self).__init__()    
         user = kwargs.get('user', name)
 
         auto.Directory(
@@ -64,3 +59,6 @@ class Daemon(auto.Rule):
             target=kwargs['workdir'],
         )
 
+    @staticmethod
+    def pre():
+        auto.Package('runit')

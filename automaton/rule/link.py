@@ -22,6 +22,7 @@ import automaton as auto
 
 class Link(auto.Rule):
     def __init__(self, path, **kwargs):
+        super(Link, self).__init__()    
         kind = kwargs.get('kind', 'symbolic')
         group = kwargs.get('group', kwargs['owner'])
     
