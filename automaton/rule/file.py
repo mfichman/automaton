@@ -34,7 +34,7 @@ class File(auto.Rule):
             auto.schedule('touch %s' % path)
         elif type(kwargs['content']) == str:
             auto.schedule('chmod -f +rw %s||true' % path)
-            auto.schedule('cat <<EOF > %s\n%s\nEOF' % (path, kwargs['content']))
+            auto.schedule('cat <<"EOF" > %s\n%s\nEOF' % (path, kwargs['content']))
         elif kwargs['content']['source'] == 'remote':
             auto.schedule('chmod -f +rw %s||true' % path)
             auto.schedule('curl --silent %s > %s' % (kwargs['content']['url'], path))

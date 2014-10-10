@@ -24,7 +24,7 @@ import automaton as auto
 class Package(auto.Rule):
     def __init__(self, name, **kwargs):
         super(Package, self).__init__()    
-        auto.schedule('apt-get install -y %s' % name)
+        auto.schedule('DEBIAN_FRONTEND=noninteractive apt-get install -y %s' % name)
 
     @staticmethod
     def pre():
