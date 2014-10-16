@@ -23,6 +23,7 @@ import argparse
 import subprocess
 import sys
 import os
+import paramiko
 
 # FIXME: These commands are specific to the bash driver; they should be moved
 # to a bash driver initialization routine
@@ -55,7 +56,6 @@ auto.FirewallRule = FirewallRule
 auto.Daemon = Daemon
 
 def main():
-
     parser = argparse.ArgumentParser()
     parser.add_argument('host', nargs='*', type=str)
     args = parser.parse_args()
@@ -66,10 +66,7 @@ def main():
 
     payload = auto.core.payload()
 
-    if len(args.host) <= 0:
-        print(payload)
-    else:
-        import paramiko
+    if len(args.host) > 0:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         for host in args.host:
@@ -80,8 +77,8 @@ def main():
             sys.stdout.write(stdout.read())
             sys.stderr.write(stderr.read())
             ssh.close()
-
-            #subprocess.check_call(('ssh', '-t', host, 'sudo bash automaton.sh'))
+    else:
+        print(payload)
             
 
 if __name__ == '__main__':

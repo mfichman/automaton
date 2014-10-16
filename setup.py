@@ -10,6 +10,7 @@ setup(
     keywords = ('provisioning'),
     url = 'http://github.com/mfichman/automaton',
     packages = find_packages(),
+    install_requires = ('paramiko', 'py-bcrypt'),
     entry_points = {
         'console_scripts': (
             'automaton = automaton.__main__:main'
