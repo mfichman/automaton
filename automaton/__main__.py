@@ -67,11 +67,22 @@ def main():
     payload = auto.core.payload()
 
     if len(args.host) > 0:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         for host in args.host:
-            ssh.connect(host, username='mfichman', password='@#hsgSiF1QqDaZntXB!!')
+            #ssh.connect(host, username='mfichman', password='@#hsgSiF1QqDaZntXB!!')
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(host, username='root') #, key_file='~/.ssh/id_rsa') #, key_file=h='@#hsgSiF1QqDaZntXB!!')
             (stdin, stdout, stderr) = ssh.exec_command('bash -c "cat > automaton.sh"') 
+            stdin.write(payload)
+            stdin.channel.shutdown_write()
+            sys.stdout.write(stdout.read())
+            sys.stderr.write(stderr.read())
+            ssh.close()
+
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(host, username='root') #, key_file='~/.ssh/id_rsa') #, key_file=h='@#hsgSiF1QqDaZntXB!!')
+            (stdin, stdout, stderr) = ssh.exec_command('bash automaton.sh') 
             stdin.write(payload)
             stdin.channel.shutdown_write()
             sys.stdout.write(stdout.read())
